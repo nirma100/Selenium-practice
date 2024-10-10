@@ -1,0 +1,49 @@
+# https://www.youtube.com/watch?v=Xjv1sY630Uc
+# download web driver and set it in C:\Program Files (x86)
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service 
+import time
+from selenium.webdriver.common.by import By
+
+# Specify the path to the ChromeDriver
+path = r"C:\Program Files (x86)\chromedriver.exe"
+service = Service(path)
+driver = webdriver.Chrome(service=service)
+
+# Open the desired website
+driver.get("https://google.com/")
+time.sleep(1)
+
+driver.find_element(By.NAME, "q").send_keys("We Are the Champions")
+time.sleep(1)
+
+# Correctly selecting all options from the list using find_elements
+optionsList = driver.find_elements(By.CSS_SELECTOR, 'ul.G43f7e li span')  # Note the plural here
+time.sleep(1)
+
+# Iterating through the list of elements and printing their text
+for ele in optionsList:
+    print(ele.text)
+    if ele.text == 'We Are the Champions':
+        ele.click()
+        break
+time.sleep(1)
+
+# Find YouTube video links (the selector may vary based on the current page structure)
+video_links = driver.find_elements(By.CSS_SELECTOR, 'a[href*="youtube.com"]')
+video_links[0].click()
+driver.execute_script("""
+        var video = document.querySelector('video');
+        if (video) {
+            video.currentTime = 38;  // Set to 38 seconds
+            video.volume = 1;  // Set volume to max (1.0 is max)
+        }
+    """)
+#
+
+
+time.sleep(16)
+# Close the browser
+driver.quit()
+
